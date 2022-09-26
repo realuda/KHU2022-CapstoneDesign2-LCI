@@ -1,11 +1,10 @@
-from re import A
 #챌린저 유저 id 찾고 csv 파일로 저장
 import json
 import requests
 import pandas as pd
 import time
 
-api_key = "RGAPI-39b371e9-77a6-4baa-bb67-629c0dcc7ba0"
+api_key = 'RGAPI-dda2952f-6b50-4bb2-b17f-804c0eb83bf5'
 
 tier = 'CHALLENGER' #티어 
 
@@ -40,4 +39,4 @@ if res.status_code == 200:
     df.to_csv("ChallengerID.csv", index = False, encoding ='utf-8-sig')
 
 else:
-    print("잘못 입력됨")
+    print("잘못 입력됨")    

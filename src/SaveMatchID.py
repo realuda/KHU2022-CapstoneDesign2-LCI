@@ -1,59 +1,53 @@
+#puuid에서 matchId 가져오기(중복x)
+import json
 import requests
-import pprint
 import pandas as pd
-import datetime
-import csv
 import time
+import datetime
 
-pp = pprint.PrettyPrinter(indent=4)
-api_key = "RGAPI-97c35d4b-b840-4437-a5b7-1e7fb58a19fd"
-request_header = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36",
-    "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
-    "Origin": "https://developer.riotgames.com",
-    "X-Riot-Token": api_key
-}
+api_key = 'RGAPI-dda2952f-6b50-4bb2-b17f-804c0eb83bf5'
 
+week = 86400*7 #일주일 타임스탬프
 
-def match_v5_get_list_match_id(puuid, start, count):
-    url = f"https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start={start}&count={count}"
-    return requests.get(url, headers=request_header).json()
+puuidList = [] #챌린저 유저 puuid 저장하는 list
+matchList = set() #챌린저 유저의 matchId 저장하는 set
 
-def get_match_id(puuid) :
-    f = open('MatchId_data.csv', 'a', newline='')
-    wr = csv.writer(f)
-    for k in [0,100,200] :
-        time.sleep(2)
-        match_data = match_v5_get_list_match_id(puuid, k, 100)
-        for i in match_data :
-            wr.writerow([i])
+current = datetime.datetime.now().timestamp() #현재 timestamp
+weekago = str(int(current)-week) #일주일 전 timestamp
+
+#URL = https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/GFuRfwdmM24SOsfs3OpSYrs8u0qKJntEgsjnp3y97_K2a0bEYTU3IX79jL2VTjTvL6XNDBrmGb4UWA/ids?startTime=1663522807&type=ranked&start=0&count=20
+#res = requests.get(URL, headers = {"X-Riot-Token": api_key })
+
+#csv 파일 읽어오기(puuid만 list로 저장)
+df = pd.read_csv('challengerID.csv', encoding = 'utf-8-sig') #챌린저 유저 정보가 담긴 csv file read
+puuidList = df['puuId']
 
 
-sumname = pd.read_csv('D:/project_files/platinum_15000user.csv',encoding='cp949')
-# print(league_df['summonerName'])
-sumname=sumname['summonerName']
-i = 1
-error_list = []
-for s_name in sumname :
-    try:
-        print(s_name, i)
-        summoner_url = f"https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/{s_name}"
-        summoner_info = requests.get(summoner_url, headers=request_header)
-        if summoner_info.status_code != 200:
-            raise ValueError
-        summoner_info = summoner_info.json()
-        summoner_puuid = summoner_info['puuid']
-        time.sleep(1)
-        get_match_id(summoner_puuid)
-        # if puuid.status_code==404 :
-        #     raise ValueError
-#         final_reulst.append(puuid)
-#         time.sleep(1)
-    except :
-        print('제외됨')
-        error_list.append(i)
+#puuid에서 matchId 가져오기
 
-    i += 1
+for userPid in puuidList:
+    #한 번에 많은 요청을 보내면 거부해서 2초의 시간차를 둠
+    time.sleep(2)
+    
 
-print(error_list)
+    #요청 URL
+    URL = 'https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/{0}/ids?startTime={1}&type=ranked&count=100'.format(userPid, weekago)
+    res = requests.get(URL, headers = {"X-Riot-Token": api_key })
+
+    #성공
+    if res.status_code == 200:
+        matchId = json.loads(res.text)
+
+        for i in matchId:
+            matchList.add(i)
+
+        
+        print("Done")
+    
+    #실패
+    else:
+        print("URL 접근 실패")
+
+#matchId csv로 저장
+df = pd.DataFrame(list(matchList), columns = ['matchId'])
+df.to_csv("ChallengerMatchID.csv", index = False, encoding = 'utf-8-sig')
