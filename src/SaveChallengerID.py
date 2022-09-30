@@ -4,9 +4,12 @@ import requests
 import pandas as pd
 import time
 
-api_key = 'RGAPI-dda2952f-6b50-4bb2-b17f-804c0eb83bf5'
+#api키 읽어오기
+f = open("../key.txt",'r')
+api_key = f.readline()
 
 tier = 'CHALLENGER' #티어 
+tier2 = 'GRANDMASTER'
 
 URL = 'https://kr.api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/'+tier+'/I'
 res = requests.get(URL, headers = {"X-Riot-Token": api_key })
@@ -18,16 +21,15 @@ puuidList = []
 if res.status_code == 200:
     resobj = json.loads(res.text)
     for i in resobj:
-        time.sleep(1)
         print(i["summonerName"])
         sNameList.append(i["summonerName"])
         sidList.append(i["summonerId"])
 
 
-        #puuid가져오기
+        #puuid가져오기. 1분에 1600 requests
         URL2 = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/"+i["summonerId"]
         res2 = requests.get(URL2, headers = {"X-Riot-Token": api_key})
-        time.sleep(1)
+        #time.sleep(1.2)
         challengerInfo = json.loads(res2.text)
         print(challengerInfo["puuid"])
         puuidList.append(challengerInfo["puuid"])
@@ -39,4 +41,4 @@ if res.status_code == 200:
     df.to_csv("ChallengerID.csv", index = False, encoding ='utf-8-sig')
 
 else:
-    print("잘못 입력됨")    
+    print("키가 잘못됨")    

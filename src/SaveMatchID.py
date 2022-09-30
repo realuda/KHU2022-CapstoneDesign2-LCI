@@ -5,10 +5,11 @@ import pandas as pd
 import time
 import datetime
 
-api_key = ''
+#api키 읽어오기
+f = open("../key.txt",'r')
+api_key = f.readline()
 
-
-day_WantToGet = 7   #구하고자 하는 날
+day_WantToGet = 14   #구하고자 하는 날
 
 day = 86400    #하루 타임스탬프
 day_left = 86400*day_WantToGet  #남은 날짜 계산용 변수
@@ -43,10 +44,9 @@ for userPid in puuidList:
         else:
             temp2 = tempDay
 
-        print(tempDay)
-        print(temp2)
 
         #요청 URL. 최대 매치id를 100개밖에 못가져와서 3일씩 계산함
+        #10초에 500requests
         URL = 'https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/{0}/ids?startTime={1}&endTime={2}&type=ranked&count=100'.format(userPid, tempAgo, str(int(tempAgo)+day*temp2))
         res = requests.get(URL, headers = {"X-Riot-Token": api_key })
 
@@ -62,7 +62,7 @@ for userPid in puuidList:
             tempAgo = str(int(tempAgo)+day*temp2)
             print("Done " + str(count))
         
-            time.sleep(2) #한 번에 많은 요청을 보내면 거부해서 2초의 시간차를 둠
+            #time.sleep(1.2) #한 번에 많은 요청을 보내면 거부해서 2초의 시간차를 둠
         #실패
         else:
             print("URL 접근 실패")
