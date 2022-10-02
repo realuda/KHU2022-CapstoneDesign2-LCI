@@ -10,7 +10,8 @@ from requests.adapters import HTTPAdapter, Retry
 f = open("../key.txt",'r')
 api_key = f.readline()
 
-day_WantToGet = 14   #구하고자 하는 날
+day_WantToGet = 7   #구하고자 하는 날
+divine = 4          #며칠 당 100명씩 나올지
 
 day = 86400    #하루 타임스탬프
 day_left = 86400*day_WantToGet  #남은 날짜 계산용 변수
@@ -41,8 +42,8 @@ for userPid in puuidList:
 
     while tempDay>0:
         
-        if tempDay>3:
-            temp2 = 3
+        if tempDay> divine:
+            temp2 = divine
         else:
             temp2 = tempDay
 
@@ -60,7 +61,7 @@ for userPid in puuidList:
             session.mount('http://', adapter)
             session.mount('https://', adapter)
 
-            #요청 URL. 최대 매치id를 100개밖에 못가져와서 3일씩 계산함
+            #요청 URL. 최대 매치id를 100개밖에 못가져와서 divine씩 계산함
             #10초에 500requests
             URL = 'https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/{0}/ids?startTime={1}&endTime={2}&type=ranked&count=100'.format(userPid, tempAgo, str(int(tempAgo)+day*temp2))
             res = session.get(URL, headers = {"X-Riot-Token": api_key })
