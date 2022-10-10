@@ -27,7 +27,7 @@ import pandas as pd
 import time
 
 #매치 수
-matchCount = 5621
+matchCount = 5414
 
 #api키 읽어오기
 f = open("../key.txt",'r')
@@ -88,7 +88,6 @@ for match in matchList:
         now_time = time.time()  #얼마나 지났나
         time.sleep(120-(now_time-start)) #120초에서 경과시간을 뺀 만큼 sleep. 경과시간 = now_time-start
         start = time.time() #start 다시 설정
-    
 
     try:
         #request 초과 에러 방지용
