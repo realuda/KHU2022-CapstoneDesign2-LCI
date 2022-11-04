@@ -60,22 +60,25 @@ for i in range(champ_Count):
     champ = []
     champ.append(df.loc[i][0])              #챔피언 이름
     champ_NameList.append(df.loc[i][0])
-    champ.append(df.loc[i][2]+df.loc[i][3]) #총 판 수
-    champ.append(df.loc[i][4])              #밴 수
+    #champ.append(df.loc[i][2]+df.loc[i][3]) #총 판 수
+    #champ.append(df.loc[i][4])              #밴 수
     for j in range(champ_Count):
-        champ.append(df.loc[i][j*2+5])      #챔피언(승)
-        champ.append(df.loc[i][j*2+6])      #챔피언(패)
+        champ.append(df.loc[i][j*3+5])      #챔피언(승)
+        champ.append(df.loc[i][j*3+6])      #챔피언(패)
+        champ.append(df.loc[i][j*3+7])      #챔피언(밴)
     champ_Info.append(champ)
 
 maxValue = 0
 minValue = 0
 
-pick_bonus = 5      #픽률 가중치
-winRate_bonus = 15  #승률 가중치
+#pick_bonus = 5      #픽률 가중치
+#winRate_bonus = 15  #승률 가중치
+winRate_weight = 0.85
+banRate_weight = 0.0025
 
 weight = []
 
-#print(champ_Info)
+print(champ_Info)
 
 for i in range(champ_Count):
     for j in range(i+1, champ_Count):
@@ -89,7 +92,7 @@ for i in range(champ_Count):
         #weight_winRate = (champ_Info[i][j*2+3]-champ_Info[i][j*2+4]) / (champ_Info[i][j*2+3]+champ_Info[i][j*2+4]) * winRate_bonus
 
         #value = round(weight_ban,4)+round(weight_pick,4)+round(weight_winRate,4)
-        value = champ_Info[i][j*2+3]-champ_Info[i][j*2+4]
+        value = champ_Info[i][j*3+1]-champ_Info[i][j*3+2]*winRate_weight+champ_Info[i][j*3+3]*banRate_weight
         #print(value)
         if value > maxValue:
             maxValue = value
