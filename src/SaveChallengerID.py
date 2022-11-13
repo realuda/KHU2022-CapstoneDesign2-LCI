@@ -1,4 +1,4 @@
-#챌린저 유저 id 찾고 csv 파일로 저장
+#마스터 유저 id 찾고 csv 파일로 저장
 import json
 import requests
 from requests.adapters import HTTPAdapter, Retry
@@ -9,7 +9,7 @@ import time
 f = open("../key.txt",'r')
 api_key = f.readline()
 
-tier_list = ['CHALLENGER', 'GRANDMASTER']
+tier_list = ['CHALLENGER', 'GRANDMASTER', 'MASTER']
 
 sidList = []
 sNameList = []
@@ -30,6 +30,8 @@ for tier in tier_list:
         page = 2
     elif tier == 'GRANDMASTER':
         page = 4
+    elif tier == 'MASTER':
+        page = 28
 
     for page in range(0,page):
         #티어에 따른 유저 정보(이름, sid)를 가져온다.
@@ -49,7 +51,10 @@ for tier in tier_list:
                 #2분 최대 100회의 request만 수행한다
                 if count%100 == 0:
                     now_time = time.time()  #얼마나 지났나
-                    time.sleep(120-(now_time-start)) #120초에서 경과시간을 뺀 만큼 sleep. 경과시간 = now_time-start
+                    if now_time-start <= 120:
+                        time.sleep(120-(now_time-start)) #120초에서 경과시간을 뺀 만큼 sleep. 경과시간 = now_time-start
+                    else:
+                        time.sleep(120)
                     start = time.time() #start 다시 설정
 
                 try:
@@ -74,7 +79,7 @@ for tier in tier_list:
                     #print(challengerInfo["puuid"])
                     
                     count+=1
-                    print("Done "+str(count) + "/1000") #챌+그마 유저 1000명
+                    print("Done "+str(count) + "/6592") #챌+그마+마 유저 6592명
                     puuidList.append(challengerInfo["puuid"])
 
                 else:
@@ -91,6 +96,6 @@ df = pd.DataFrame(sNameList,columns = ['summonerName'])
 df['summonerId'] = sidList
 df['puuId'] = puuidList
 
-df.to_csv("ChallengerID.csv", index = False, encoding ='utf-8-sig')
+df.to_csv("MasterID.csv", index = False, encoding ='utf-8-sig')
 
 print(err_count)

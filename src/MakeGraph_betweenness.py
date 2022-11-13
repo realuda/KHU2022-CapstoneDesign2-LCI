@@ -44,8 +44,8 @@ add_edge : edge1, edge2, weight
 import pandas as pd
 import networkx as nx
 
-match_Count = 39638  #전체 매치수
-champ_Count = 161   #챔프수
+match_Count = 5414 #전체 매치수
+champ_Count = 161 
 
 #챔피언 이름, 수
 champ_NameList = []
@@ -87,11 +87,6 @@ for i in range(champ_Count):
         edge.append(champ_Info[j][0])
         champ_Edge.append(edge)
 
-        #weight_ban = (champ_Info[i][2] + champ_Info[j][2]) / match_Count
-        #weight_pick = (champ_Info[i][1] + champ_Info[j][1]) / match_Count * pick_bonus
-        #weight_winRate = (champ_Info[i][j*2+3]-champ_Info[i][j*2+4]) / (champ_Info[i][j*2+3]+champ_Info[i][j*2+4]) * winRate_bonus
-
-        #value = round(weight_ban,4)+round(weight_pick,4)+round(weight_winRate,4)
         value = champ_Info[i][j*3+1]-champ_Info[i][j*3+2]*winRate_weight+champ_Info[i][j*3+3]*banRate_weight
         #print(value)
         if value > maxValue:
@@ -105,12 +100,21 @@ for i in range(len(weight)):
     normalized_value = (weight[i]-minValue) / (maxValue-minValue)
     if(normalized_value == 0):
         normalized_value = 0.1
+
+    normalized_value = 1 / normalized_value
     champ_Edge[i].append(normalized_value)
 print(len(champ_Edge))
 #print(weight)
 
 Graph = nx.Graph()
 Graph.add_nodes_from(champ_NameList)
+
+edge_list = []
+
 for i in range(len(champ_Edge)):
-    Graph.add_edge(champ_Edge[i][0], champ_Edge[i][1], weight=champ_Edge[i][2])
-nx.write_gexf(Graph, "ChampGraph.gexf")
+    edge_list.append((champ_Edge[i][0], champ_Edge[i][1], {'weight':champ_Edge[i][2]}))
+
+Graph.add_edges_from(edge_list)
+betweenness = nx.betweenness_centrality(Graph, weight='weight')
+
+print(betweenness)

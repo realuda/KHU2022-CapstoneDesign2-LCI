@@ -9,7 +9,7 @@ from requests.adapters import HTTPAdapter, Retry
 #api키 읽어오기
 f = open("../key.txt",'r')
 api_key = f.readline()
-
+#1667433600
 day_WantToGet = 7   #구하고자 하는 날
 divine = 4          #며칠 당 100명씩 나올지
 
@@ -20,11 +20,12 @@ puuidList = [] #챌린저 유저 puuid 저장하는 list
 matchList = set() #챌린저 유저의 matchId 저장하는 set
 
 current = datetime.datetime.now().timestamp() #현재 timestamp
-wantAgo = str(int(current)-day_left) #원하는 날의 첫 날 timestamp
+wantAgo = str(1667433600-day_left)  #2022년 11월 3일 00시(표준시)
+#wantAgo = str(int(current)-day_left) #원하는 날의 첫 날 timestamp
 
 
 #csv 파일 읽어오기(puuid만 list로 저장)
-df = pd.read_csv('challengerID.csv', encoding = 'utf-8-sig') #챌린저 유저 정보가 담긴 csv file read
+df = pd.read_csv('MasterID.csv', encoding = 'utf-8-sig') #챌린저 유저 정보가 담긴 csv file read
 puuidList = df['puuId']
 
 #request보낼때마다 +1
@@ -50,7 +51,10 @@ for userPid in puuidList:
         #100번째마다 시간 검사
         if count%100 == 0 and count != 0:
             now_time = time.time()  #얼마나 지났나
-            time.sleep(120-(now_time-start)) #120초에서 경과시간을 뺀 만큼 sleep. 경과시간 = now_time-start
+            if now_time-start <= 120:
+                time.sleep(120-(now_time-start)) #120초에서 경과시간을 뺀 만큼 sleep. 경과시간 = now_time-start
+            else:
+                time.sleep(120)
             start = time.time() #start 다시 설정
 
         try:
@@ -93,6 +97,7 @@ for userPid in puuidList:
 
 #matchId csv로 저장
 df = pd.DataFrame(list(matchList), columns = ['matchId'])
-df.to_csv("ChallengerMatchID.csv", index = False, encoding = 'utf-8-sig')
+df.to_csv("MasterMatchID.csv", index = False, encoding = 'utf-8-sig')
 
+#6335?
 print(err_count)

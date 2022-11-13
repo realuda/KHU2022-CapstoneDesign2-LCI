@@ -27,7 +27,7 @@ import pandas as pd
 import time
 
 #매치 수
-matchCount = 5414
+matchCount = 39638
 
 #api키 읽어오기
 f = open("../key.txt",'r')
@@ -71,7 +71,7 @@ loseCIdList = []    #매치에서 패배한 챔피언id 리스트
 matchList = []
 
 #csv 파일 읽어오기(matchId만 list로 저장)
-df = pd.read_csv('challengerMatchID.csv', encoding = 'utf-8-sig') #챌린저 유저 정보가 담긴 csv file read
+df = pd.read_csv('MasterMatchID.csv', encoding = 'utf-8-sig') #마스터이상 유저 정보가 담긴 csv file read
 matchList = df['matchId']
 
 #request보낼때마다 +1
@@ -86,7 +86,10 @@ for match in matchList:
     #100번째마다 시간 검사
     if count%100 == 0 and count != 0:
         now_time = time.time()  #얼마나 지났나
-        time.sleep(120-(now_time-start)) #120초에서 경과시간을 뺀 만큼 sleep. 경과시간 = now_time-start
+        if now_time-start <= 120:
+            time.sleep(120-(now_time-start)) #120초에서 경과시간을 뺀 만큼 sleep. 경과시간 = now_time-start
+        else:
+            time.sleep(120)
         start = time.time() #start 다시 설정
 
     try:
@@ -138,6 +141,7 @@ for match in matchList:
                         else:
                             if winCId_col in findCId.keys():
                                 findCId[winCId_col][0] +=1
+
         #진 챔피언 리스트를 돌면서 같이 진 챔피언의 lose+1
         for loseCId_row in loseCIdList:   #같은 리스트 내에서 반복
             for loseCId_col in loseCIdList:   #같은 리스트 내에서 반복
