@@ -44,7 +44,7 @@ champ_NameList = []
 champ_Edge = []
 #MAIN
 champ_Info = []
-df = pd.read_csv("MatchResult_counter.csv", encoding='utf-8-sig')
+df = pd.read_csv("MatchResult_12.20.csv", encoding='utf-8-sig')
 #print(df.loc[0][0]) #행 열
 
 for i in range(champ_Count):
@@ -52,8 +52,8 @@ for i in range(champ_Count):
     champ.append(df.loc[i][0])              #챔피언 이름
     champ_NameList.append(df.loc[i][0])
     for j in range(champ_Count):
-        champ.append(df.loc[i][j*2+4])      #vs챔피언(승)
-        champ.append(df.loc[i][j*2+5])      #vs챔피언(패)
+        champ.append(df.loc[i][j*5+8])      #vs챔피언(승)
+        champ.append(df.loc[i][j*5+9])      #vs챔피언(패)
     champ_Info.append(champ)
 
 maxValue = 0
@@ -106,4 +106,4 @@ Graph = nx.DiGraph()    #directed graph
 Graph.add_nodes_from(champ_NameList)
 for i in range(len(champ_Edge)):
     Graph.add_edge(champ_Edge[i][0], champ_Edge[i][1], weight=champ_Edge[i][2])
-nx.write_gexf(Graph, "ChampGraph_counter.gexf")
+nx.write_gexf(Graph, "ChampGraph_12.20_counter.gexf")

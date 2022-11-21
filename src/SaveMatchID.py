@@ -20,12 +20,14 @@ puuidList = [] #챌린저 유저 puuid 저장하는 list
 matchList = set() #챌린저 유저의 matchId 저장하는 set
 
 current = datetime.datetime.now().timestamp() #현재 timestamp
-wantAgo = str(1667433600-day_left)  #2022년 11월 3일 00시(표준시)
+wantAgo = str(1664928000-day_left)  
+#2022년 11월 3일 00시(표준시) 1667433600
+#2022년 10월 5일 00시(표준시) 1664928000
 #wantAgo = str(int(current)-day_left) #원하는 날의 첫 날 timestamp
 
 
 #csv 파일 읽어오기(puuid만 list로 저장)
-df = pd.read_csv('MasterID.csv', encoding = 'utf-8-sig') #챌린저 유저 정보가 담긴 csv file read
+df = pd.read_csv('MasterID.csv', encoding = 'utf-8-sig') #마스터 유저 정보가 담긴 csv file read
 puuidList = df['puuId']
 
 #request보낼때마다 +1
@@ -97,7 +99,7 @@ for userPid in puuidList:
 
 #matchId csv로 저장
 df = pd.DataFrame(list(matchList), columns = ['matchId'])
-df.to_csv("MasterMatchID.csv", index = False, encoding = 'utf-8-sig')
+df.to_csv("MasterMatchID_12.18.csv", index = False, encoding = 'utf-8-sig')
 
 #6335?
 print(err_count)

@@ -53,7 +53,7 @@ champ_NameList = []
 champ_Edge = []
 #MAIN
 champ_Info = []
-df = pd.read_csv("MatchResult.csv", encoding='utf-8-sig')
+df = pd.read_csv("MatchResult_12.20.csv", encoding='utf-8-sig')
 #print(df.loc[0][0]) #행 열
 
 for i in range(champ_Count):
@@ -63,9 +63,9 @@ for i in range(champ_Count):
     #champ.append(df.loc[i][2]+df.loc[i][3]) #총 판 수
     #champ.append(df.loc[i][4])              #밴 수
     for j in range(champ_Count):
-        champ.append(df.loc[i][j*3+5])      #챔피언(승)
-        champ.append(df.loc[i][j*3+6])      #챔피언(패)
-        champ.append(df.loc[i][j*3+7])      #챔피언(밴)
+        champ.append(df.loc[i][j*5+5])      #챔피언(승)
+        champ.append(df.loc[i][j*5+6])      #챔피언(패)
+        champ.append(df.loc[i][j*5+7])      #챔피언(밴)
     champ_Info.append(champ)
 
 maxValue = 0

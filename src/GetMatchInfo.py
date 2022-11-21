@@ -60,9 +60,9 @@ for champ in champ_result:
     for champ_id in champ_idList:
         #print(champ_result[champ])
         if champ != champ_id:
-            champ_result[champ].append({champ_id:[0,0,0]})
+            champ_result[champ].append({champ_id:[0,0,0,0,0]})
         else:
-            champ_result[champ].append({champ_id:[-1,-1,-1]})
+            champ_result[champ].append({champ_id:[-1,-1,-1,-1,-1]})
 
 winCIdList = []     #매치에서 승리한 챔피언id 리스트
 loseCIdList = []    #매치에서 패배한 챔피언id 리스트
@@ -71,7 +71,7 @@ loseCIdList = []    #매치에서 패배한 챔피언id 리스트
 matchList = []
 
 #csv 파일 읽어오기(matchId만 list로 저장)
-df = pd.read_csv('MasterMatchID.csv', encoding = 'utf-8-sig') #마스터이상 유저 정보가 담긴 csv file read
+df = pd.read_csv('MasterMatchID_12.20.csv', encoding = 'utf-8-sig') #마스터이상 유저 정보가 담긴 csv file read
 matchList = df['matchId']
 
 #request보낼때마다 +1
@@ -165,7 +165,6 @@ for match in matchList:
                     champ_result[i["championId"]][2] += 1
 
         #밴 된 챔피언 set을 돌면서 밴 된 챔피언 리스트로 다시 저장. 인덱싱하려고 리스트로 옮김
-        
         for i in banned_ChampionSet:
             banned_ChampionList.append(i)
 
@@ -179,6 +178,23 @@ for match in matchList:
                         else:
                             if banCId_col in findCId.keys():
                                 findCId[banCId_col][2] +=1
+
+        for winCId in winCIdList:   
+            for loseCId in loseCIdList:
+                tempCount = 0
+                for findCId in champ_result[winCId]:
+                    if tempCount<4:
+                        tempCount +=1
+                    else:
+                        if loseCId in findCId.keys():
+                            findCId[loseCId][3]+=1  #vs승
+                tempCount = 0
+                for findCId in champ_result[loseCId]:
+                    if tempCount<4:
+                        tempCount +=1
+                    else:
+                        if winCId in findCId.keys():
+                            findCId[winCId][4]+=1   #vs패
 
         count += 1
         print("Done "+str(count) + "/" + str(matchCount))
@@ -217,21 +233,29 @@ for champ_col in range(4,165):
     cwList=[]   #이긴 챔피언 리스트
     clList=[]   #진 챔피언 리스트
     cbList=[]   #같이 밴 된 챔피언 리스트
+    vsWList = []   #상대로 이긴 리스트
+    vsLList = []    #상대로 진 리스트
     for champ_row in champ_result:  #champ_row: 266: [0,0,0,'아트록스', {266: [-1,-1, -1]},...]
         tmp = list(champ_result[champ_row][champ_col].values())
         cwList.append(tmp[0][0])
         clList.append(tmp[0][1])
         cbList.append(tmp[0][2])
+        vsWList.append(tmp[0][3])
+        vsLList.append(tmp[0][4])
     #돌았으면 df에 저장. 챔프이름(승) 챔프이름(패) 이렇게 두개 저장
     colWName = champ_NameList[champ_col-4] + "(승)"
     colLName = champ_NameList[champ_col-4] + "(패)"
     colBName = champ_NameList[champ_col-4] + "(밴)"
+    colvsWName = "vs"+champ_NameList[champ_col-4] + "(승)"
+    colvsLName = "vs"+champ_NameList[champ_col-4] + "(패)"
     df[colWName] = cwList
     df[colLName] = clList
     df[colBName] = cbList
+    df[colvsWName] = vsWList
+    df[colvsLName] = vsLList
 
 #csv에 저장
-df.to_csv("MatchResult.csv", index = False, encoding = 'utf-8-sig')
+df.to_csv("MatchResult_12.20.csv", index = False, encoding = 'utf-8-sig')
 
 #에러를 일으킨 매치 아이디list 출력
 print(err_count)
