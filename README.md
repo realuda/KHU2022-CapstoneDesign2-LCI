@@ -13,6 +13,25 @@ Graph Centrality를 이용한 리그 오브 레전드 챔피언 영향력 분석
 <br/><br/>
 
 ## 프로그램 및 모듈 설치
-#### API key 발급
+#### 1. API key 발급
+'''
+https://developer.riotgames.com/
+'''
+데이터 수집을 위해서는 Riot API를 이용해야 한다. <br/>
+Riot API를 이용하기 위해서는 Riot Developer Portal에서 API key를 발급받아야 한다.<br/>
+#### 2. Graph
+'''
+pip install pandas
+pip install networkx
+'''
+그래프 생성을 위해서 pandas와 networkx 를 설치한다.<br/>
+#### 3. Gephi
+'''
+https://gephi.org/
+'''
+그래프 시각화를 위해 Gephi 홈페이지에서 Gephi를 다운로드받아 설치한다.
+<br/><br/>
+
+
 
 
