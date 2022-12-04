@@ -32,6 +32,8 @@ https://gephi.org/
 그래프 시각화를 위해 Gephi 홈페이지에서 Gephi를 다운로드받아 설치한다.
 <br/><br/>
 
+## 그래프 시각화
+![image](https://user-images.githubusercontent.com/30518853/205503307-ba68bb6c-84cf-4562-800e-14bff32f7294.PNG)
 
 
 
